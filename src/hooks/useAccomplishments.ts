@@ -12,13 +12,15 @@ import {
   writeBatch,
   Timestamp,
   serverTimestamp,
+} from 'firebase/firestore';
+import type {
   QuerySnapshot,
   DocumentData,
   QueryDocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { AccomplishmentLog, AccomplishmentTemplate } from '../types';
+import type { AccomplishmentLog, AccomplishmentTemplate } from '../types';
 import { addDays, addWeeks, addMonths, isBefore } from 'date-fns';
 
 export function useAccomplishments() {
