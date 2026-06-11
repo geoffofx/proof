@@ -11,12 +11,15 @@ import {
   deleteDoc,
   writeBatch,
   Timestamp,
-  serverTimestamp 
+  serverTimestamp,
+  QuerySnapshot,
+  DocumentData,
+  QueryDocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { AccomplishmentLog, AccomplishmentTemplate, Frequency } from '../types';
-import { addDays, addWeeks, addMonths, isBefore, subDays } from 'date-fns';
+import { AccomplishmentLog, AccomplishmentTemplate } from '../types';
+import { addDays, addWeeks, addMonths, isBefore } from 'date-fns';
 
 export function useAccomplishments() {
   const { user } = useAuthStore();
@@ -38,16 +41,16 @@ export function useAccomplishments() {
       where('userId', '==', user.uid)
     );
 
-    const unsubscribeLogs = onSnapshot(logsQuery, (snapshot) => {
-      const logsData = snapshot.docs.map(doc => ({
+    const unsubscribeLogs = onSnapshot(logsQuery, (snapshot: QuerySnapshot<DocumentData>) => {
+      const logsData = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
         id: doc.id,
         ...doc.data()
       })) as AccomplishmentLog[];
       setLogs(logsData);
     });
 
-    const unsubscribeTemplates = onSnapshot(templatesQuery, (snapshot) => {
-      const templatesData = snapshot.docs.map(doc => ({
+    const unsubscribeTemplates = onSnapshot(templatesQuery, (snapshot: QuerySnapshot<DocumentData>) => {
+      const templatesData = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
         id: doc.id,
         ...doc.data()
       })) as AccomplishmentTemplate[];

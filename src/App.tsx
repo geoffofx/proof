@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase';
 import { useAuthStore } from './store/useAuthStore';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -11,12 +11,12 @@ function App() {
   const { user, loading, setUser, setLoading } = useAuthStore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       setUser(user);
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [setUser, setLoading]);
 
   if (loading) {
     return (
