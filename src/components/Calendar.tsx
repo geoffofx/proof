@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { 
   format, 
   startOfWeek, 
@@ -12,9 +12,9 @@ import {
   eachMonthOfInterval,
   endOfYear
 } from 'date-fns';
-import { AccomplishmentLog } from '../types';
+import type { AccomplishmentLog } from '../types';
 import { useCalendarStore } from '../store/useCalendarStore';
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 interface CalendarProps {
   logs: AccomplishmentLog[];
@@ -24,14 +24,14 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
   const { zoomLevel, setZoomLevel, filterTemplateId } = useCalendarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Generate 12 weeks of data for the infinite scroll (6 past, 1 current, 5 future)
+  // Generate weeks of data for the infinite scroll
   const weeks = useMemo(() => {
     const today = new Date();
     const start = startOfWeek(subWeeks(today, 26)); // Show half a year of weeks
     const end = endOfWeek(addWeeks(today, 4));
     
     const days = eachDayOfInterval({ start, end });
-    const weekChunks = [];
+    const weekChunks: Date[][] = [];
     for (let i = 0; i < days.length; i += 7) {
       weekChunks.push(days.slice(i, i + 7));
     }
@@ -40,7 +40,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
 
   const years = useMemo(() => {
     const today = new Date();
-    const yearsArr = [];
+    const yearsArr: Date[] = [];
     for (let i = 0; i < 5; i++) {
       yearsArr.push(subWeeks(today, i * 52));
     }

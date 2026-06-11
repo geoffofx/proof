@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, X, Search } from 'lucide-react';
-import { AccomplishmentTemplate } from '../types';
+import type { AccomplishmentTemplate } from '../types';
 
 interface SmartAddProps {
   templates: AccomplishmentTemplate[];

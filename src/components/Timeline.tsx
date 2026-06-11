@@ -1,3 +1,4 @@
+import React from 'react';
 import { AccomplishmentLog } from '../types';
 import { format } from 'date-fns';
 import { CheckCircle2, MoreVertical, Trash2, Edit2, AlertCircle } from 'lucide-react';

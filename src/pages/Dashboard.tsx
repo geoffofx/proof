@@ -6,7 +6,7 @@ import { PulseReminders } from '../components/PulseReminders';
 import { Calendar } from '../components/Calendar';
 import { LogOut, Calendar as CalendarIcon, List } from 'lucide-react';
 import { auth } from '../firebase';
-import { AccomplishmentTemplate, Frequency } from '../types';
+import type { AccomplishmentTemplate, Frequency } from '../types';
 
 export const Dashboard: React.FC = () => {
   const { logs, templates, loading, addLog, updateLog, deleteLog, addTemplate, getReminders } = useAccomplishments();

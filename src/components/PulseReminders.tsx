@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccomplishmentTemplate } from '../types';
+import type { AccomplishmentTemplate } from '../types';
 import { Activity, ArrowRight } from 'lucide-react';
 
 interface PulseRemindersProps {
