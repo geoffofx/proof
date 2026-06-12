@@ -27,8 +27,8 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
   // Generate weeks of data for the infinite scroll
   const weeks = useMemo(() => {
     const today = new Date();
-    const start = startOfWeek(subWeeks(today, 26)); // Show half a year of weeks
-    const end = endOfWeek(addWeeks(today, 4));
+    const start = startOfWeek(subWeeks(today, 26), { weekStartsOn: 1 }); // Show half a year of weeks
+    const end = endOfWeek(addWeeks(today, 4), { weekStartsOn: 1 });
     
     const days = eachDayOfInterval({ start, end });
     const weekChunks: Date[][] = [];
@@ -111,7 +111,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
           <div key={i} className="text-center text-[10px] font-bold text-gray-400 uppercase py-2">
             {d}
           </div>
