@@ -4,7 +4,7 @@ import { Timeline } from '../components/Timeline';
 import { SmartAdd } from '../components/SmartAdd';
 import { PulseReminders } from '../components/PulseReminders';
 import { Calendar } from '../components/Calendar';
-import { LogOut, Calendar as CalendarIcon, List } from 'lucide-react';
+import { LogOut, Calendar as CalendarIcon, List, RefreshCw } from 'lucide-react';
 import { auth } from '../firebase';
 import type { AccomplishmentTemplate, Frequency } from '../types';
 
@@ -47,6 +47,13 @@ export const Dashboard: React.FC = () => {
             Proof
           </h1>
           <div className="flex items-center gap-2">
+            <button 
+              onClick={() => window.location.reload()}
+              className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all"
+              title="Refresh"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
             <button 
               onClick={() => setActiveView(activeView === 'timeline' ? 'calendar' : 'timeline')}
               className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all flex items-center gap-2"
