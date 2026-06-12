@@ -131,7 +131,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div className="grid grid-cols-7 gap-1 mb-2 pr-2">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
           <div key={i} className="text-center text-[10px] font-bold text-gray-400 uppercase py-2">
             {d}
