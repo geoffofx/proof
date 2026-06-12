@@ -23,6 +23,7 @@ interface CalendarProps {
 export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
   const { zoomLevel, setZoomLevel, filterTemplateId } = useCalendarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentMonth, setCurrentMonth] = React.useState<string>('Loading...');
 
   // Generate weeks of data for the infinite scroll
   const weeks = useMemo(() => {
@@ -37,6 +38,26 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
     }
     return weekChunks.reverse(); // Newest at top
   }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollPosition = scrollRef.current.scrollTop;
+      // Approximate height of a week row, including gap
+      const rowHeight = 40; 
+      const index = Math.floor(scrollPosition / rowHeight);
+      const activeWeek = weeks[index];
+      
+      if (activeWeek) {
+        // Take the date from the middle of the week to determine month
+        const midDay = activeWeek[3];
+        setCurrentMonth(format(midDay, 'MMMM yyyy'));
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    handleScroll();
+  }, [weeks]);
 
   const years = useMemo(() => {
     const today = new Date();
@@ -101,7 +122,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
   return (
     <div className="animate-in fade-in duration-500">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-800">Consistency Grid</h2>
+        <h2 className="text-lg font-bold text-gray-800">{currentMonth}</h2>
         <button 
           onClick={() => setZoomLevel('yearly')}
           className="p-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-2 text-sm font-medium"
@@ -118,7 +139,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
         ))}
       </div>
 
-      <div ref={scrollRef} className="space-y-1 h-[600px] overflow-y-auto pr-2 scrollbar-hide">
+      <div ref={scrollRef} onScroll={handleScroll} className="space-y-1 h-[600px] overflow-y-auto pr-2 scrollbar-hide">
         {weeks.map((week, weekIdx) => (
           <div key={weekIdx} className="grid grid-cols-7 gap-1">
             {week.map((day, dayIdx) => {
