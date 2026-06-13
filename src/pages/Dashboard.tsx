@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAccomplishments } from '../hooks/useAccomplishments';
 import { Timeline } from '../components/Timeline';
 import { SmartAdd } from '../components/SmartAdd';
 import { PulseReminders } from '../components/PulseReminders';
 import { Calendar } from '../components/Calendar';
-import { LogOut, Calendar as CalendarIcon, List, RefreshCw } from 'lucide-react';
+import { FrequencyChart } from '../components/FrequencyChart';
+import { calculateProofFrequencies } from '../utils/statistics';
+import { LogOut, Calendar as CalendarIcon, List, RefreshCw, BarChart2 } from 'lucide-react';
 import { auth } from '../firebase';
 import type { AccomplishmentTemplate, Frequency } from '../types';
 
 export const Dashboard: React.FC = () => {
   const { logs, templates, loading, addLog, updateLog, deleteLog, addTemplate, getReminders } = useAccomplishments();
-  const [activeView, setActiveView] = React.useState<'timeline' | 'calendar'>('timeline');
+  const [activeView, setActiveView] = React.useState<'timeline' | 'calendar' | 'stats'>('timeline');
+
+  const frequencies = useMemo(() => calculateProofFrequencies(logs), [logs]);
 
   const handleAddLog = (text: string, templateId?: string) => {
     addLog(text, templateId);
@@ -38,6 +42,18 @@ export const Dashboard: React.FC = () => {
 
   const reminders = getReminders();
 
+  const toggleView = () => {
+    setActiveView(prev => prev === 'timeline' ? 'calendar' : prev === 'calendar' ? 'stats' : 'timeline');
+  };
+
+  const getViewIcon = () => {
+    switch (activeView) {
+      case 'timeline': return <CalendarIcon className="w-5 h-5" />;
+      case 'calendar': return <BarChart2 className="w-5 h-5" />;
+      case 'stats': return <List className="w-5 h-5" />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
@@ -55,20 +71,11 @@ export const Dashboard: React.FC = () => {
               <RefreshCw className="w-5 h-5" />
             </button>
             <button 
-              onClick={() => setActiveView(activeView === 'timeline' ? 'calendar' : 'timeline')}
+              onClick={toggleView}
               className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all flex items-center gap-2"
             >
-              {activeView === 'timeline' ? (
-                <>
-                  <CalendarIcon className="w-5 h-5" />
-                  <span className="text-xs font-bold hidden sm:inline">Calendar</span>
-                </>
-              ) : (
-                <>
-                  <List className="w-5 h-5" />
-                  <span className="text-xs font-bold hidden sm:inline">Timeline</span>
-                </>
-              )}
+              {getViewIcon()}
+              <span className="text-xs font-bold hidden sm:inline capitalize">{activeView}</span>
             </button>
             <button 
               onClick={() => auth.signOut()}
@@ -94,8 +101,13 @@ export const Dashboard: React.FC = () => {
               />
             </div>
           </>
-        ) : (
+        ) : activeView === 'calendar' ? (
           <Calendar logs={logs} />
+        ) : (
+          <div className="mb-8">
+            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Frequency Stats</h2>
+            <FrequencyChart frequencies={frequencies} />
+          </div>
         )}
       </main>
 
