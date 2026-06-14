@@ -48,9 +48,9 @@ export const Dashboard: React.FC = () => {
 
   const getViewIcon = () => {
     switch (activeView) {
-      case 'timeline': return <CalendarIcon className="w-5 h-5" />;
-      case 'calendar': return <BarChart2 className="w-5 h-5" />;
-      case 'stats': return <List className="w-5 h-5" />;
+      case 'timeline': return <List className="w-5 h-5" />;
+      case 'calendar': return <CalendarIcon className="w-5 h-5" />;
+      case 'stats': return <BarChart2 className="w-5 h-5" />;
     }
   };
 
