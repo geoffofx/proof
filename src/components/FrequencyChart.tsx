@@ -1,5 +1,6 @@
 import React from 'react';
-import { ProofFrequency, getMilestoneProgress } from '../utils/statistics';
+import type { ProofFrequency } from '../utils/statistics';
+import { getMilestoneProgress } from '../utils/statistics';
 
 interface FrequencyChartProps {
   frequencies: ProofFrequency[];
