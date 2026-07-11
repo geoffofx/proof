@@ -56,14 +56,14 @@ export function useAccomplishments() {
     });
   };
 
-  const addLog = async (text: string, templateId: string | null = null, seriesId: string | null = null) => {
+  const addLog = async (text: string, templateId: string | null = null, seriesId: string | null = null, notes: string = "") => {
     if (!user) return;
-    await addAccomplishmentLog(user.uid, text, templateId, seriesId);
+    await addAccomplishmentLog(user.uid, text, templateId, seriesId, notes);
   };
 
-  const updateLog = async (logId: string, text: string, mode: 'one' | 'future' | 'all' = 'one') => {
+  const updateLog = async (logId: string, text: string, notes: string = "", mode: 'one' | 'future' | 'all' = 'one') => {
     if (!user) return;
-    await updateAccomplishmentLog(user.uid, logId, text, mode, logs);
+    await updateAccomplishmentLog(user.uid, logId, text, notes, mode, logs);
   };
 
   const deleteLog = async (logId: string) => {

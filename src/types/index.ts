@@ -19,4 +19,5 @@ export interface AccomplishmentLog {
   text: string;
   timestamp: Timestamp;
   seriesId: string | null;
+  notes?: string;
 }

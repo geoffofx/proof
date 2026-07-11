@@ -4,7 +4,7 @@ import type { AccomplishmentTemplate } from '../types';
 
 interface SmartAddProps {
   templates: AccomplishmentTemplate[];
-  onAdd: (text: string, templateId?: string) => void;
+  onAdd: (text: string, templateId?: string, notes?: string) => void;
   onCreateTemplate: (text: string, frequency: string) => void;
   prefilledTemplate?: AccomplishmentTemplate | null;
   onClearPrefilled?: () => void;
@@ -19,6 +19,7 @@ export const SmartAdd: React.FC<SmartAddProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState('');
+  const [notes, setNotes] = useState('');
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [frequency, setFrequency] = useState('none');
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export const SmartAdd: React.FC<SmartAddProps> = ({
     if (isTemplateMode) {
       onCreateTemplate(text, frequency);
     } else {
-      onAdd(text, selectedTemplateId || undefined);
+      onAdd(text, selectedTemplateId || undefined, notes);
     }
 
     reset();
@@ -53,6 +54,7 @@ export const SmartAdd: React.FC<SmartAddProps> = ({
 
   const reset = () => {
     setText('');
+    setNotes('');
     setIsOpen(false);
     setIsTemplateMode(false);
     setFrequency('none');
@@ -95,6 +97,20 @@ export const SmartAdd: React.FC<SmartAddProps> = ({
               className="w-full min-h-[100px] p-3 text-gray-800 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none transition-all"
             />
           </div>
+
+          {!isTemplateMode && (
+            <div className="mt-4">
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">
+                Notes (Optional)
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add extra context, links, or details..."
+                className="w-full min-h-[70px] p-3 text-sm text-gray-700 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none transition-all"
+              />
+            </div>
+          )}
 
           {!isTemplateMode && text.length > 0 && filteredTemplates.length > 0 && (
             <div className="mt-2 space-y-1">

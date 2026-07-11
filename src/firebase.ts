@@ -41,6 +41,7 @@ interface StoredLog {
   text: string;
   timestamp: { seconds: number; nanoseconds: number };
   seriesId: string | null;
+  notes?: string;
 }
 
 interface StoredTemplate {
@@ -265,7 +266,8 @@ export const addAccomplishmentLog = async (
   userId: string,
   text: string,
   templateId: string | null = null,
-  seriesId: string | null = null
+  seriesId: string | null = null,
+  notes: string = ""
 ) => {
   if (isFirebaseConfigured && db) {
     const newLog = {
@@ -273,7 +275,8 @@ export const addAccomplishmentLog = async (
       text,
       templateId,
       timestamp: FirebaseTimestamp.now(),
-      seriesId: seriesId || (templateId ? `series_${Date.now()}` : null)
+      seriesId: seriesId || (templateId ? `series_${Date.now()}` : null),
+      notes
     };
 
     await addDoc(collection(db, 'accomplishment_logs'), newLog);
@@ -295,7 +298,8 @@ export const addAccomplishmentLog = async (
       text,
       templateId,
       timestamp: { seconds: now.seconds, nanoseconds: now.nanoseconds },
-      seriesId: seriesId || (templateId ? `series_${Date.now()}` : null)
+      seriesId: seriesId || (templateId ? `series_${Date.now()}` : null),
+      notes
     };
 
     logsList.push(newLog);
@@ -319,6 +323,7 @@ export const updateAccomplishmentLog = async (
   userId: string,
   logId: string,
   text: string,
+  notes: string = "",
   mode: 'one' | 'all' | 'future' = 'one',
   logs: AccomplishmentLog[] = []
 ) => {
@@ -327,12 +332,12 @@ export const updateAccomplishmentLog = async (
     if (!log) return;
 
     if (mode === 'one' || !log.seriesId) {
-      await updateDoc(doc(db, 'accomplishment_logs', logId), { text });
+      await updateDoc(doc(db, 'accomplishment_logs', logId), { text, notes });
     } else if (mode === 'all') {
       const batch = writeBatch(db);
       const seriesLogs = logs.filter(l => l.seriesId === log.seriesId);
       seriesLogs.forEach(l => {
-        batch.update(doc(db, 'accomplishment_logs', l.id), { text });
+        batch.update(doc(db, 'accomplishment_logs', l.id), { text, notes });
       });
       if (log.templateId) {
         batch.update(doc(db, 'accomplishment_templates', log.templateId), { text });
@@ -345,7 +350,7 @@ export const updateAccomplishmentLog = async (
         l.timestamp.toMillis() >= log.timestamp.toMillis()
       );
       futureLogs.forEach(l => {
-        batch.update(doc(db, 'accomplishment_logs', l.id), { text });
+        batch.update(doc(db, 'accomplishment_logs', l.id), { text, notes });
       });
       if (log.templateId) {
         batch.update(doc(db, 'accomplishment_templates', log.templateId), { text });
@@ -364,11 +369,13 @@ export const updateAccomplishmentLog = async (
       const index = logsList.findIndex((l) => l.id === logId);
       if (index !== -1) {
         logsList[index].text = text;
+        logsList[index].notes = notes;
       }
     } else if (mode === 'all') {
       logsList.forEach((l) => {
         if (l.seriesId === log.seriesId) {
           l.text = text;
+          l.notes = notes;
         }
       });
       if (log.templateId) {
@@ -387,6 +394,7 @@ export const updateAccomplishmentLog = async (
       logsList.forEach((l) => {
         if (l.seriesId === log.seriesId && getMillis(l.timestamp) >= logMillis) {
           l.text = text;
+          l.notes = notes;
         }
       });
       if (log.templateId) {

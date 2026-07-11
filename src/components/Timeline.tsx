@@ -5,13 +5,14 @@ import { CheckCircle2, MoreVertical, Trash2, Edit2, AlertCircle } from 'lucide-r
 
 interface TimelineProps {
   logs: AccomplishmentLog[];
-  onUpdate: (logId: string, text: string, mode: 'one' | 'future' | 'all') => void;
+  onUpdate: (logId: string, text: string, notes: string, mode: 'one' | 'future' | 'all') => void;
   onDelete: (logId: string) => void;
 }
 
 export const Timeline: React.FC<TimelineProps> = ({ logs, onUpdate, onDelete }) => {
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [editText, setEditText] = React.useState('');
+  const [editNotes, setEditNotes] = React.useState('');
   const [showOptions, setShowOptions] = React.useState<string | null>(null);
   const [showSeriesConfirm, setShowSeriesConfirm] = React.useState<AccomplishmentLog | null>(null);
 
@@ -27,7 +28,7 @@ export const Timeline: React.FC<TimelineProps> = ({ logs, onUpdate, onDelete }) 
 
   const handleUpdate = (mode: 'one' | 'future' | 'all') => {
     if (showSeriesConfirm) {
-      onUpdate(showSeriesConfirm.id, editText, mode);
+      onUpdate(showSeriesConfirm.id, editText, editNotes, mode);
       setShowSeriesConfirm(null);
       setEditingId(null);
     }
@@ -44,19 +45,35 @@ export const Timeline: React.FC<TimelineProps> = ({ logs, onUpdate, onDelete }) 
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:shadow-md group">
             {editingId === log.id ? (
               <div className="space-y-3">
-                <textarea
-                  autoFocus
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                  className="w-full p-3 text-sm text-gray-800 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                />
+                <div>
+                  <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">
+                    Accomplishment
+                  </label>
+                  <textarea
+                    autoFocus
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    className="w-full p-3 text-sm text-gray-800 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">
+                    Notes (Optional)
+                  </label>
+                  <textarea
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    className="w-full p-3 text-sm text-gray-700 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    placeholder="Add extra context..."
+                  />
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
                       if (log.seriesId) {
                         setShowSeriesConfirm(log);
                       } else {
-                        onUpdate(log.id, editText, 'one');
+                        onUpdate(log.id, editText, editNotes, 'one');
                         setEditingId(null);
                       }
                     }}
@@ -75,7 +92,14 @@ export const Timeline: React.FC<TimelineProps> = ({ logs, onUpdate, onDelete }) 
             ) : (
               <>
                 <div className="flex justify-between items-start gap-4">
-                  <p className="text-gray-800 font-semibold leading-relaxed">{log.text}</p>
+                  <div className="flex-1">
+                    <p className="text-gray-800 font-semibold leading-relaxed">{log.text}</p>
+                    {log.notes && (
+                      <p className="text-gray-500 text-sm mt-2 whitespace-pre-wrap border-l-2 border-blue-100 pl-3">
+                        {log.notes}
+                      </p>
+                    )}
+                  </div>
                   <div className="relative">
                     <button 
                       onClick={() => setShowOptions(showOptions === log.id ? null : log.id)}
@@ -89,6 +113,7 @@ export const Timeline: React.FC<TimelineProps> = ({ logs, onUpdate, onDelete }) 
                           onClick={() => {
                             setEditingId(log.id);
                             setEditText(log.text);
+                            setEditNotes(log.notes || '');
                             setShowOptions(null);
                           }}
                           className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 flex items-center gap-2"
