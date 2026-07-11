@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import type { User } from 'firebase/auth';
-import { auth } from './firebase';
+import { onAuthChange } from './firebase';
+import type { AuthUser } from './firebase';
 import { useAuthStore } from './store/useAuthStore';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -12,7 +11,7 @@ function App() {
   const { user, loading, setUser, setLoading } = useAuthStore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+    const unsubscribe = onAuthChange((user: AuthUser | null) => {
       setUser(user);
       setLoading(false);
     });

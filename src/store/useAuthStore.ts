@@ -1,9 +1,10 @@
 import { create } from 'zustand';
+import type { AuthUser } from '../firebase';
 
 interface AuthState {
-  user: any | null;
+  user: AuthUser | null;
   loading: boolean;
-  setUser: (user: any | null) => void;
+  setUser: (user: AuthUser | null) => void;
   setLoading: (loading: boolean) => void;
 }
 

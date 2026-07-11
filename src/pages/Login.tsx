@@ -1,12 +1,11 @@
 import React from 'react';
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { signInWithGoogle, isFirebaseConfigured } from '../firebase';
 import { ShieldCheck, Heart, Zap } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogle();
     } catch (error) {
       console.error("Error signing in", error);
     }
@@ -15,12 +14,18 @@ export const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="max-w-md w-full text-center space-y-8">
-        <div className="space-y-4">
-          <div className="w-20 h-20 bg-blue-600 rounded-3xl mx-auto flex items-center justify-center shadow-xl rotate-3 transform hover:rotate-0 transition-transform duration-300">
+        <div className="space-y-4 flex flex-col items-center">
+          <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-xl rotate-3 transform hover:rotate-0 transition-transform duration-300">
             <ShieldCheck className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Proof</h1>
           <p className="text-gray-500 text-lg">Your personal ledger of value and contribution.</p>
+          {!isFirebaseConfigured && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-full">
+              <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+              Local Demo Mode (No Setup Required)
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-4 pt-8">

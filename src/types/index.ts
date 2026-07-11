@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from '../firebase';
 
 export type Frequency = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'none';
 

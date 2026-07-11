@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Checks if the user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: Checks if the logged-in user owns the document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Rules for Accomplishment Logs
+    match /accomplishment_logs/{logId} {
+      // Allow reading and deleting existing logs owned by the user
+      allow read, delete: if isAuthenticated() && isOwner(resource.data.userId);
+      
+      // Allow creating logs where the userId matches the authenticated user
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      
+      // Allow updating logs where both the existing owner and target owner matches the authenticated user
+      allow update: if isAuthenticated() && isOwner(resource.data.userId) && isOwner(request.resource.data.userId);
+    }
+
+    // Rules for Accomplishment Templates
+    match /accomplishment_templates/{templateId} {
+      // Allow reading and deleting existing templates owned by the user
+      allow read, delete: if isAuthenticated() && isOwner(resource.data.userId);
+      
+      // Allow creating templates where the userId matches the authenticated user
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      
+      // Allow updating templates where both the existing owner and target owner matches the authenticated user
+      allow update: if isAuthenticated() && isOwner(resource.data.userId) && isOwner(request.resource.data.userId);
+    }
+  }
+}

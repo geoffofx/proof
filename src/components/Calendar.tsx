@@ -39,7 +39,7 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
     return weekChunks.reverse(); // Newest at top
   }, []);
 
-  const handleScroll = () => {
+  const handleScroll = React.useCallback(() => {
     if (scrollRef.current) {
       const scrollPosition = scrollRef.current.scrollTop;
       // Approximate height of a week row, including gap
@@ -53,11 +53,11 @@ export const Calendar: React.FC<CalendarProps> = ({ logs }) => {
         setCurrentMonth(format(midDay, 'MMMM yyyy'));
       }
     }
-  };
+  }, [weeks]);
 
   React.useEffect(() => {
     handleScroll();
-  }, [weeks]);
+  }, [handleScroll]);
 
   const years = useMemo(() => {
     const today = new Date();

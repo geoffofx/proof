@@ -7,7 +7,7 @@ import { Calendar } from '../components/Calendar';
 import { FrequencyChart } from '../components/FrequencyChart';
 import { calculateProofFrequencies } from '../utils/statistics';
 import { LogOut, Calendar as CalendarIcon, List, RefreshCw, BarChart2 } from 'lucide-react';
-import { auth } from '../firebase';
+import { signOutUser, isFirebaseConfigured } from '../firebase';
 import type { AccomplishmentTemplate, Frequency } from '../types';
 
 export const Dashboard: React.FC = () => {
@@ -64,7 +64,7 @@ export const Dashboard: React.FC = () => {
           </h1>
           <div className="flex items-center gap-2">
             <button 
-              onClick={() => window.location.reload()}
+               onClick={() => window.location.reload()}
               className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all"
               title="Refresh"
             >
@@ -78,7 +78,7 @@ export const Dashboard: React.FC = () => {
               <span className="text-xs font-bold hidden sm:inline capitalize">{activeView}</span>
             </button>
             <button 
-              onClick={() => auth.signOut()}
+              onClick={() => signOutUser()}
               className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
             >
               <LogOut className="w-5 h-5" />
@@ -86,6 +86,14 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {!isFirebaseConfigured && (
+        <div className="bg-amber-50 border-b border-amber-100 py-2.5 px-4 text-amber-800 text-xs text-center font-medium flex items-center justify-center gap-2">
+          <span>⚠️ Running in Local Demo Mode. Data is saved to your browser.</span>
+          <span className="opacity-60">|</span>
+          <span>To sync with Firebase, configure your <code>.env.local</code> file.</span>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8">
