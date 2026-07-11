@@ -37,7 +37,7 @@ export const PulseReminders: React.FC<PulseRemindersProps> = ({ reminders, onLog
                 {template.frequency}
               </span>
               <span className="text-xs font-medium text-gray-400 group-hover:text-blue-600 flex items-center gap-1 transition-colors">
-                Log Now <ArrowRight className="w-3 h-3" />
+                Log... <ArrowRight className="w-3 h-3" />
               </span>
             </div>
           </button>

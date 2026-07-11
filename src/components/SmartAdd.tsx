@@ -6,13 +6,33 @@ interface SmartAddProps {
   templates: AccomplishmentTemplate[];
   onAdd: (text: string, templateId?: string) => void;
   onCreateTemplate: (text: string, frequency: string) => void;
+  prefilledTemplate?: AccomplishmentTemplate | null;
+  onClearPrefilled?: () => void;
 }
 
-export const SmartAdd: React.FC<SmartAddProps> = ({ templates, onAdd, onCreateTemplate }) => {
+export const SmartAdd: React.FC<SmartAddProps> = ({ 
+  templates, 
+  onAdd, 
+  onCreateTemplate,
+  prefilledTemplate,
+  onClearPrefilled
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState('');
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [frequency, setFrequency] = useState('none');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const [prevPrefilledTemplate, setPrevPrefilledTemplate] = useState<AccomplishmentTemplate | null>(null);
+
+  if (prefilledTemplate !== prevPrefilledTemplate) {
+    setPrevPrefilledTemplate(prefilledTemplate || null);
+    if (prefilledTemplate) {
+      setIsOpen(true);
+      setText(prefilledTemplate.text);
+      setSelectedTemplateId(prefilledTemplate.id);
+      setIsTemplateMode(false);
+    }
+  }
 
   const filteredTemplates = templates.filter(t => 
     t.text.toLowerCase().includes(text.toLowerCase())
@@ -25,7 +45,7 @@ export const SmartAdd: React.FC<SmartAddProps> = ({ templates, onAdd, onCreateTe
     if (isTemplateMode) {
       onCreateTemplate(text, frequency);
     } else {
-      onAdd(text);
+      onAdd(text, selectedTemplateId || undefined);
     }
 
     reset();
@@ -36,6 +56,10 @@ export const SmartAdd: React.FC<SmartAddProps> = ({ templates, onAdd, onCreateTe
     setIsOpen(false);
     setIsTemplateMode(false);
     setFrequency('none');
+    setSelectedTemplateId(null);
+    if (onClearPrefilled) {
+      onClearPrefilled();
+    }
   };
 
   if (!isOpen) {

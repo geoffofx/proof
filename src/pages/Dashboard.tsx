@@ -13,6 +13,7 @@ import type { AccomplishmentTemplate, Frequency } from '../types';
 export const Dashboard: React.FC = () => {
   const { logs, templates, loading, addLog, updateLog, deleteLog, addTemplate, getReminders } = useAccomplishments();
   const [activeView, setActiveView] = React.useState<'timeline' | 'calendar' | 'stats'>('timeline');
+  const [prefilledTemplate, setPrefilledTemplate] = React.useState<AccomplishmentTemplate | null>(null);
 
   const frequencies = useMemo(() => calculateProofFrequencies(logs), [logs]);
 
@@ -29,7 +30,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleLogReminder = (template: AccomplishmentTemplate) => {
-    addLog(template.text, template.id);
+    setPrefilledTemplate(template);
   };
 
   if (loading) {
@@ -123,6 +124,8 @@ export const Dashboard: React.FC = () => {
         templates={templates} 
         onAdd={handleAddLog} 
         onCreateTemplate={handleCreateTemplate} 
+        prefilledTemplate={prefilledTemplate}
+        onClearPrefilled={() => setPrefilledTemplate(null)}
       />
     </div>
   );
